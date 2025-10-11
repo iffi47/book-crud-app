@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   MONGOOSE_URI: process.env.MONGOOSE_URI,
  },
  nitro: {
-  plugins: ["@/server/db/index.ts"],
+  plugins: ["@/server/db/index.ts", "@babel/plugin-syntax-decorators"],
  },
  build: {
   transpile: [
