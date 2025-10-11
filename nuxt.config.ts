@@ -10,4 +10,14 @@ export default defineNuxtConfig({
  runtimeConfig: {
   MONGOOSE_URI: process.env.MONGOOSE_URI,
  },
+ nitro: {
+  plugins: ["@/server/db/index.ts"],
+ },
+ build: {
+  transpile: [
+   "@headlessui/vue",
+   "vue-toastification",
+   "@headlessui/tailwindcss",
+  ],
+ },
 });
