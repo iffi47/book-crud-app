@@ -1,22 +1,13 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "files": [],
-  "references": [
-    {
-      "path": "./.nuxt/tsconfig.app.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.server.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.shared.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.node.json"
-    }
-  ],
+   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "strict": true,
+     "moduleResolution": "bundler",   // ✅ Modern mode for TS 5+
+    "ignoreDeprecations": "6.0",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "types": [
+      "nuxt"
+    ]
   }
 }

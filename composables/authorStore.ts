@@ -1,62 +1,78 @@
-import { string } from 'joi';
-import {defineStore} from "pinia";
-import {IAuthor} from "~~/types";
+import { useFetch } from "#imports";
+import { defineStore } from "pinia";
+import type { IAuthor } from "../types";
 import useToast from "./useToast";
 
-export const useAuthStore= defineStore("author-store",{ 
-  state:() =>({
-    authors:[] as IAuthor[]
-  }), 
-  actions: {
-    async getAll() {
-      try{
-        let data= await useFetch<IAuthor[]>("/api/authors");
-        this.authors= data;
-        return data as IAuthor[];
-      }catch(e){
-        useToast().error(e.message);
-      }
+export const useAuthStore = defineStore("author-store", {
+ state: () => ({
+  authors: [] as IAuthor[],
+ }),
+
+ actions: {
+  // ✅ Get all authors
+  async getAll() {
+   try {
+    const { data, error } = await useFetch<IAuthor[]>("/api/authors");
+
+    if (error.value) throw error.value;
+
+    if (data.value) {
+     this.authors = data.value;
+     return data.value;
     }
-  }
-  //Create new authors
-  	async create(name: string) {
-			await useFetch("/api/authors/create", {
-				method: "POST",
-				body: { name },
-			})
-				.catch((e) => {
-					useToast().error(e.data.message);
-				})
-				.then(async () => {
-					await this.getAll();
-					useToast().success("Author created");
-				});
-		},
-    // Update an author
-		async update(id: string, name: string) {
-			await useFetch(`/api/authors/${id}`, {
-				method: "PUT",
-				body: { name },
-			})
-				.catch((e) => {
-					useToast().error(e.data.message);
-				})
-				.then(async () => {
-					await this.getAll();
-					useToast().success("Author updated");
-				});
-		},
-		// delete an author
-		async remove(id: string) {
-			await useFetch(`/api/authors/${id}`, {
-				method: "DELETE",
-			})
-				.catch((e) => {
-					useToast().error(e.data.message);
-				})
-				.then(async () => {
-					await this.getAll();
-					useToast().success("Author removed");
-				});
-		},
-})
+   } catch (e: any) {
+    useToast().error(e?.message || "Failed to load authors");
+   }
+  },
+
+  // ✅ Create an author
+  async create(name: string) {
+   try {
+    const { error } = await useFetch("/api/authors/create", {
+     method: "POST",
+     body: { name },
+    });
+
+    if (error.value) throw error.value;
+
+    await this.getAll();
+    useToast().success("Author created");
+   } catch (e: any) {
+    useToast().error(e?.message || "Failed to create author");
+   }
+  },
+
+  // ✅ Update an author
+  async update(id: string, name: string) {
+   try {
+    const { error } = await useFetch(`/api/authors/${id}`, {
+     method: "PUT",
+     body: { name },
+    });
+
+    if (error.value) throw error.value;
+
+    await this.getAll();
+    useToast().success("Author updated");
+   } catch (e: any) {
+    useToast().error(e?.message || "Failed to update author");
+   }
+  },
+
+  // ✅ Delete an author
+  async remove(id: string) {
+   try {
+    const { error } = await useFetch(`/api/authors/${id}`, {
+     method: "DELETE",
+    });
+
+    if (error.value) throw error.value;
+
+    await this.getAll();
+    useToast().success("Author removed");
+   } catch (e: any) {
+    useToast().error(e?.message || "Failed to remove author");
+   }
+  },
+ },
+});
